@@ -1707,9 +1707,9 @@ public class DataTableRenderer extends DataRenderer {
     protected Map<SortMeta, String> getSortableColumnHeaders(FacesContext context, DataTable table) {
         AtomicReference<String> headerLabel = new AtomicReference<>(null);
 
-        List<String> columnClientIds = table.getColumns().stream().map(UIColumn::getClientId).collect(Collectors.toList());
+        List<String> columnKeys = table.getColumns().stream().map(UIColumn::getColumnKey).collect(Collectors.toList());
         List<SortMeta> sortMetaList = table.getSortByAsMap().values().stream()
-                .sorted(Comparator.comparing(sortMeta -> columnClientIds.indexOf(sortMeta.getColumnKey())))
+                .sorted(Comparator.comparing(sortMeta -> columnKeys.indexOf(sortMeta.getColumnKey())))
                 .collect(Collectors.toList());
         Map<SortMeta, String> headers = new LinkedHashMap<>(sortMetaList.size());
         for (SortMeta sortMeta : sortMetaList) {
