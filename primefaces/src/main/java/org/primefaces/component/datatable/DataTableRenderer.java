@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import javax.el.ELContext;
 import javax.el.MethodExpression;
@@ -1706,9 +1707,12 @@ public class DataTableRenderer extends DataRenderer {
     protected Map<SortMeta, String> getSortableColumnHeaders(FacesContext context, DataTable table) {
         AtomicReference<String> headerLabel = new AtomicReference<>(null);
 
-        Map<String, SortMeta> sortByAsMap = table.getSortByAsMap();
-        Map<SortMeta, String> headers = new LinkedHashMap<>(sortByAsMap.size());
-        for (SortMeta sortMeta : sortByAsMap.values()) {
+        List<String> columnClientIds = table.getColumns().stream().map(UIColumn::getClientId).collect(Collectors.toList());
+        List<SortMeta> sortMetaList = table.getSortByAsMap().values().stream()
+                .sorted(Comparator.comparing(sortMeta -> columnClientIds.indexOf(sortMeta.getColumnKey())))
+                .collect(Collectors.toList());
+        Map<SortMeta, String> headers = new LinkedHashMap<>(sortMetaList.size());
+        for (SortMeta sortMeta : sortMetaList) {
             if (sortMeta.isHeaderRow()) {
                 continue;
             }
