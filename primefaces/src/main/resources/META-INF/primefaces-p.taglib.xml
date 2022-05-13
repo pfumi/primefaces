@@ -49,6 +49,17 @@
     </function>
 
     <function>
+        <function-name>dynamicColumnValue</function-name>
+        <function-class>org.primefaces.util.ComponentUtils</function-class>
+        <function-signature>java.lang.Object getDynamicColumnValue(javax.faces.component.UIComponent)</function-signature>
+    </function>
+    <function>
+        <function-name>dynamicColumnValueAsString</function-name>
+        <function-class>org.primefaces.util.ComponentUtils</function-class>
+        <function-signature>java.lang.String getDynamicColumnValueAsString(javax.faces.component.UIComponent)</function-signature>
+    </function>
+
+    <function>
         <function-name>ifGranted</function-name>
         <function-class>org.primefaces.util.SecurityUtils</function-class>
         <function-signature>boolean ifGranted(java.lang.String)</function-signature>
@@ -6282,7 +6293,7 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[If true, the button will be disabled during Ajax requests triggered by the button. Default is 'false'.]]>
+                <![CDATA[If true, the button will be disabled during Ajax requests triggered by the button. Default is 'true'.]]>
             </description>
             <name>disableOnAjax</name>
             <required>false</required>
@@ -6734,7 +6745,7 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[If true, the link will be disabled during Ajax requests triggered by the link. Default is 'false'.]]>
+                <![CDATA[If true, the link will be disabled during Ajax requests triggered by the link. Default is 'true'.]]>
             </description>
             <name>disableOnAjax</name>
             <required>false</required>
@@ -8792,6 +8803,14 @@
                 <![CDATA[Style class of each row (grid-cell) in grid layout.]]>
             </description>
             <name>gridRowStyleClass</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Text to display when there is no data to display.]]>
+            </description>
+            <name>emptyMessage</name>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
@@ -11237,6 +11256,22 @@
         </attribute>
         <attribute>
             <description>
+                <![CDATA[One or more strings separated by commas, indicating possible image sources for the user agent to use.]]>
+            </description>
+            <name>srcset</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[One or more strings separated by commas, indicating a set of source sizes.]]>
+            </description>
+            <name>sizes</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
                 <![CDATA[Style of the image.]]>
             </description>
             <name>style</name>
@@ -12975,6 +13010,22 @@
                 <![CDATA[Defines whether mask pattern would be validated or not on the server side.]]>
             </description>
             <name>validateMask</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Shows the mask when the input gets focus. Default is true.]]>
+            </description>
+            <name>showMaskOnFocus</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Shows the mask when hovering the mouse. Default is true.]]>
+            </description>
+            <name>showMaskOnHover</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
         </attribute>
@@ -17266,7 +17317,7 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[If true, the button will be disabled during Ajax requests triggered by its menu items. Default is 'false'.]]>
+                <![CDATA[If true, the button will be disabled during Ajax requests triggered by its menu items. Default is 'true'.]]>
             </description>
             <name>disableOnAjax</name>
             <required>false</required>
@@ -22229,6 +22280,12 @@
             <type>java.lang.Boolean</type>
         </attribute>
         <attribute>
+            <name>selectable</name>
+            <required>false</required>
+            <type>java.lang.Boolean</type>
+            <description>Enables selection of time ranges by clicking and dragging on the schedule, see https://fullcalendar.io/docs/select-callback. Uses the ajax-event "rangeSelect" instead of "dateSelect".</description>
+        </attribute>
+        <attribute>
             <description>
                 <![CDATA[Specifies visibility of header content. Default is true.]]>
             </description>
@@ -22684,7 +22741,7 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[]]>
+                <![CDATA[The icon representing the "On" position.]]>
             </description>
             <name>onIcon</name>
             <required>false</required>
@@ -22692,7 +22749,7 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[]]>
+                <![CDATA[The icon representing the "Off" position.]]>
             </description>
             <name>offIcon</name>
             <required>false</required>
@@ -26765,7 +26822,7 @@
         </attribute>
         <attribute>
             <description>
-                <![CDATA[If true, the button will be disabled during Ajax requests triggered by the button or its menu items. Default is 'false'.]]>
+                <![CDATA[If true, the button will be disabled during Ajax requests triggered by the button or its menu items. Default is 'true'.]]>
             </description>
             <name>disableOnAjax</name>
             <required>false</required>
@@ -27425,6 +27482,14 @@
                 <![CDATA[The aria-label attribute is used to define a string that labels the current element for accessibility.]]>
             </description>
             <name>ariaLabel</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Title attribute for menu element on tab header.]]>
+            </description>
+            <name>menuTitle</name>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
@@ -28957,6 +29022,22 @@
                 <![CDATA[Client side callback to execute when component loses focus.]]>
             </description>
             <name>onblur</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[The icon representing the "On" position.]]>
+            </description>
+            <name>onIcon</name>
+            <required>false</required>
+            <type>java.lang.String</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[The icon representing the "Off" position.]]>
+            </description>
+            <name>offIcon</name>
             <required>false</required>
             <type>java.lang.String</type>
         </attribute>
@@ -32133,6 +32214,14 @@
         </attribute>
         <attribute>
             <description>
+                <![CDATA[This is the breakpoint in pixels when to automatically switch to optimized interface if autoDetectDisplay=true. Default is 576.]]>
+            </description>
+            <name>responsiveBreakpoint</name>
+            <required>false</required>
+            <type>java.lang.Integer</type>
+        </attribute>
+        <attribute>
+            <description>
                 <![CDATA[When enabled, calendar overlay is displayed as optimized for touch devices. Default is false.]]>
             </description>
             <name>touchUI</name>
@@ -32373,6 +32462,14 @@
             <name>dynamicColor</name>
             <required>false</required>
             <type>java.lang.Boolean</type>
+        </attribute>
+        <attribute>
+            <description>
+                <![CDATA[Advisory tooltip information.]]>
+            </description>
+            <name>title</name>
+            <required>false</required>
+            <type>java.lang.String</type>
         </attribute>
         <attribute>
             <description>

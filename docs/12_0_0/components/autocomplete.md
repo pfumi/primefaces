@@ -35,6 +35,7 @@ AutoComplete provides live suggestions while an input is being typed.
 | dir | null | String | Direction indication for text that does not inherit directionality. Valid values are LTR and RTL.
 | disabled | false | Boolean | Disables input field
 | dropdown | false | Boolean | Enables dropdown mode when set true.
+| dropdownMode | blank | String | Specifies the behavior dropdown button. Default "blank" mode sends an empty string and "current" mode sends the input value.
 | dropdownTabindex | null | String | Position of the dropdown button in the tabbing order.
 | dropdownAriaLabel | null | String | ARIA Label for the dropdown button.
 | dynamic | false | Boolean | Defines if dynamic loading is enabled for the element's panel. If the value is "true", the overlay is not rendered on page load to improve performance.
@@ -315,7 +316,7 @@ Sample-useage within AutoComplete. Note `completeEndpoint`-attribute.
 ```
 
 ## LazyDataModel
-You might have a `LazyDataModels` in your project which is almost suitable to serve as an `AutoComplete` suggestions
+You might have a `LazyDataModel` in your project which is almost suitable to serve as an `AutoComplete` suggestions
 provider. It can be used with `AutoComplete` by using the `lazyModel` in combination with the `lazyField` attribute.
 The query string will be applied on the provided `lazyField` property using `MatchMode.CONTAINS`.
 
@@ -412,6 +413,7 @@ Following is the list of structural style classes;
 | .ui-autocomplete-items | List of items |
 | .ui-autocomplete-item | Each item in the list. |
 | .ui-autocomplete-query | Highlighted part in suggestions. |
+| .ui-state-loading | Container element; while search queries are executed. |
 
 As skinning style classes are global, see the main theming section for more information.
 

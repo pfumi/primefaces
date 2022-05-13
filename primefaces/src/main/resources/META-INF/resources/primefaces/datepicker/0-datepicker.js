@@ -207,6 +207,7 @@
                     this.options.disabledDates[i] = this.parseOptionValue(this.options.disabledDates[i]);
                 }
             }
+            this.bindResponsiveResizeListener();
         },
 
         parseOptionValue: function(option) {
@@ -1572,7 +1573,8 @@
             var hourDisplay = hour < 10 ? '0' + hour : hour;
 
             //type="number" min="' + minHour + '" max="' + maxHour + '" - does not work well on Firefox 70, so we don´t use it
-            var html = this.options.timeInput ? '<input value="' + hourDisplay + '" size="2" maxlength="2" tabindex="1"></input>' : '<span>' + hourDisplay + '</span>';
+            var tabindex = this.options.inline ? '0' : '1';
+            var html = this.options.timeInput ? '<input value="' + hourDisplay + '" size="2" maxlength="2" tabindex="'  +tabindex + '" class="ui-inputfield"></input>' : '<span>' + hourDisplay + '</span>';
             return this.renderTimeElements("ui-hour-picker", html, 0);
         },
 
@@ -1581,7 +1583,8 @@
                 minuteDisplay = minute < 10 ? '0' + minute : minute;
 
             //type="number" min="0" max="59" does not work well on Firefox 70, so we don´t use it
-            var html = this.options.timeInput ? '<input value="' + minuteDisplay + '" size="2" maxlength="2" tabindex="2"></input>' : '<span>' + minuteDisplay + '</span>';
+            var tabindex = this.options.inline ? '0' : '2';
+            var html = this.options.timeInput ? '<input value="' + minuteDisplay + '" size="2" maxlength="2" tabindex="' + tabindex + '" class="ui-inputfield"></input>' : '<span>' + minuteDisplay + '</span>';
             return this.renderTimeElements("ui-minute-picker", html, 1);
         },
 
@@ -1591,7 +1594,8 @@
                     secondDisplay = second < 10 ? '0' + second : second;
 
                 //type="number" min="0" max="59" does not work well on Firefox 70, so we don´t use it
-                var html =  this.options.timeInput ? '<input value="' + secondDisplay + '" size="2" maxlength="2" tabindex="3"></input>' : '<span>' + secondDisplay + '</span>';
+                var tabindex = this.options.inline ? '0' : '3';
+                var html =  this.options.timeInput ? '<input value="' + secondDisplay + '" size="2" maxlength="2" tabindex="' + tabindex + '" class="ui-inputfield"></input>' : '<span>' + secondDisplay + '</span>';
                 return this.renderTimeElements("ui-second-picker", html, 2);
             }
 
@@ -1604,7 +1608,8 @@
                     millisecondDisplay = millisecond < 10 ? '00' + millisecond : millisecond < 100 ? '0' + millisecond : millisecond;
 
                 //type="number" min="0" max="999" does not work well on Firefox 70, so we don´t use it
-                var html =  this.options.timeInput ? '<input value="' + millisecondDisplay + '" size="3" maxlength="3" tabindex="4"></input>' : '<span>' + millisecondDisplay + '</span>';
+                var tabindex = this.options.inline ? '0' : '4';
+                var html =  this.options.timeInput ? '<input value="' + millisecondDisplay + '" size="3" maxlength="3" tabindex="' + tabindex + '" class="ui-inputfield"></input>' : '<span>' + millisecondDisplay + '</span>';
                 return this.renderTimeElements("ui-millisecond-picker", html, 3);
             }
 
@@ -2186,6 +2191,16 @@
             }
         },
 
+        bindResponsiveResizeListener: function() {
+            var $this = this;
+            if (this.options.autoDetectDisplay && !this.options.inline) {
+                var namespace = 'resize.responsive' + this.options.id;
+                $(window).off(namespace).on(namespace, function() {
+                    $this.updateResponsiveness();
+                });
+            }
+        },
+
         bindWindowResizeListener: function () {
             if (this.options.inline) {
                 return;
@@ -2225,6 +2240,17 @@
                 }
 
                 this.scrollableListener = null;
+            }
+        },
+
+        updateResponsiveness: function() {
+            if (this.options.autoDetectDisplay && this.options.responsiveBreakpoint && !this.options.inline) {
+                var currentUI = this.options.touchUI;
+                var newUi = PrimeFaces.env.mobile || PrimeFaces.env.isScreenSizeLessThan(this.options.responsiveBreakpoint);
+                if (currentUI !== newUi) {
+                    this.options.touchUI = newUi;
+                    this._render();
+                }
             }
         },
 

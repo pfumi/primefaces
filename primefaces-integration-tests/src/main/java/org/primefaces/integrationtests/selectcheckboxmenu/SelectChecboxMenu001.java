@@ -21,33 +21,40 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.primefaces.showcase.filter;
+package org.primefaces.integrationtests.selectcheckboxmenu;
 
-import java.io.IOException;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.annotation.PostConstruct;
+import javax.faces.view.ViewScoped;
+import javax.inject.Named;
 
-public class CharacterEncodingFilter implements Filter {
+import lombok.Data;
 
-    @Override
-    public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain) throws IOException, ServletException {
-        req.setCharacterEncoding("UTF-8");
-        resp.setCharacterEncoding("UTF-8");
-        chain.doFilter(req, resp);
+@Named
+@ViewScoped
+@Data
+public class SelectChecboxMenu001 implements Serializable {
+
+    private static final long serialVersionUID = -7518459955779385834L;
+
+    private String[] selectedCities;
+    private List<String> cities;
+
+    @PostConstruct
+    public void init() {
+        cities = new ArrayList<>();
+        cities.add("Miami");
+        cities.add("London");
+        cities.add("Paris");
+        cities.add("Istanbul");
+        cities.add("Berlin");
+        cities.add("Barcelona");
+        cities.add("Rome");
+        cities.add("Brasilia");
+        cities.add("Amsterdam");
     }
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
-
-    @Override
-    public void destroy() {
-
-    }
 }

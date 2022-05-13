@@ -26,6 +26,7 @@ package org.primefaces.component.datatable;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -102,6 +103,10 @@ public class DataTableRenderer extends DataRenderer {
 
         encodeMarkup(context, table);
         encodeScript(context, table);
+
+        if (table.isPaginator() && table.getRows() == 0) {
+            LOGGER.log(Level.WARNING, "DataTable with paginator=true should also set the rows attribute. ClientId: " + table.getClientId());
+        }
     }
 
     protected void preRender(FacesContext context, DataTable table) {
@@ -269,7 +274,7 @@ public class DataTableRenderer extends DataRenderer {
         boolean scrollable = table.isScrollable();
         boolean hasPaginator = table.isPaginator();
         boolean resizable = table.isResizableColumns();
-        String style = table.getStyle();
+        String style = Objects.toString(table.getStyle(), Constants.EMPTY_STRING);
         String paginatorPosition = table.getPaginatorPosition();
         int frozenColumns = table.getFrozenColumns();
         boolean hasFrozenColumns = (frozenColumns != 0);

@@ -217,6 +217,21 @@ if (!PrimeFaces.dialog) {
                         sourceFrames: sourceFrames,
                         sourceComponentId: cfg.sourceComponentId,
                         sourceWidgetVar: cfg.sourceWidgetVar,
+                        onShow: function() {
+                            if (cfg.options.onShow) {
+                                var onShowFunction = '(function(ext){' + cfg.options.onShow + '})';
+                                if (PrimeFaces.csp.NONCE_VALUE) {
+                                    onShowCallback = PrimeFaces.csp.evalResult(onShowFunction);
+                                }
+                                else {
+                                    onShowCallback = rootWindow.eval(onShowFunction);
+                                }
+                                
+                                if (onShowCallback) {
+                                    onShowCallback.call(this);
+                                }
+                            }
+                        },
                         onHide: function() {
                             var $dialogWidget = this,
                             dialogFrame = this.content.children('iframe');
@@ -249,7 +264,8 @@ if (!PrimeFaces.dialog) {
                         headerElement: cfg.options.headerElement,
                         responsive: cfg.options.responsive,
                         closeOnEscape: cfg.options.closeOnEscape,
-                        focus: cfg.options.focus
+                        focus: cfg.options.focus,
+                        fitViewport: cfg.options.fitViewport
                     });
                 }
 

@@ -802,7 +802,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
     setupSelection: function() {
         this.selectionHolder = this.jqId + '_selection';
         this.cfg.rowSelectMode = this.cfg.rowSelectMode||'new';
-        this.rowSelector = '> tr.ui-widget-content.ui-datatable-selectable';
+        this.rowSelector = 'tr.ui-widget-content.ui-datatable-selectable';
         this.cfg.disabledTextSelection = this.cfg.disabledTextSelection === false ? false : true;
         this.cfg.selectionPageOnly = this.cfg.selectionPageOnly !== false;
         this.rowSelectorForRowClick = this.cfg.rowSelector||'td:not(.ui-column-unselectable):not(.ui-grouped-column),span:not(.ui-c)';
@@ -851,7 +851,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
 
         this.bindRowHover(this.rowSelector);
 
-        this.tbody.off('click.dataTable mousedown.dataTable', this.rowSelector).on('mousedown.dataTable', this.rowSelector, null, function(e) {
+        this.jq.off('click.dataTable mousedown.dataTable', this.rowSelector).on('mousedown.dataTable', this.rowSelector, null, function(e) {
             $this.mousedownOnRow = true;
         })
         .on('click.dataTable', this.rowSelector, null, function(e) {
@@ -985,7 +985,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
      */
     bindRowHover: function(rowSelector) {
         var $this = this;
-        this.tbody.off('mouseenter.dataTable mouseleave.dataTable', rowSelector)
+        this.jq.off('mouseenter.dataTable mouseleave.dataTable', rowSelector)
             .on('mouseenter.dataTable', rowSelector, null, function() {
                 if (!$this.ignoreRowHoverEvent) {
                     $(this).addClass('ui-state-hover');
@@ -999,7 +999,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
 
         if (this.cfg.groupColumnIndexes) {
             var columnSelector = rowSelector + ' > td';
-            this.tbody.off('mouseenter.dataTable mouseleave.dataTable', columnSelector)
+            this.jq.off('mouseenter.dataTable mouseleave.dataTable', columnSelector)
                 .on('mouseenter.dataTable', columnSelector, null, function() {
                     var row = $(this).parent();
                     if ($(this).hasClass('ui-grouped-column')) {
@@ -1093,14 +1093,14 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
         checkboxSelector;
 
         if(this.cfg.nativeElements) {
-            checkboxSelector = '> tr.ui-widget-content.ui-datatable-selectable > td.ui-selection-column :checkbox';
+            checkboxSelector = 'tr.ui-widget-content.ui-datatable-selectable > td.ui-selection-column :checkbox';
             this.checkAllToggler = this.thead.find('> tr > th.ui-selection-column > :checkbox');
 
             this.checkAllToggler.on('click', function() {
                 $this.toggleCheckAll();
             });
 
-            this.tbody.off('click.dataTable', checkboxSelector).on('click.dataTable', checkboxSelector, null, function(e) {
+            this.jq.off('click.dataTable', checkboxSelector).on('click.dataTable', checkboxSelector, null, function(e) {
                 var checkbox = $(this);
 
                 if(checkbox.prop('checked'))
@@ -1110,7 +1110,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
             });
         }
         else {
-            checkboxSelector = '> tr.ui-widget-content.ui-datatable-selectable > td.ui-selection-column > div.ui-chkbox > div.ui-chkbox-box';
+            checkboxSelector = 'tr.ui-widget-content.ui-datatable-selectable > td.ui-selection-column > div.ui-chkbox > div.ui-chkbox-box';
             this.checkAllToggler = this.thead.find('> tr > th.ui-selection-column > div.ui-chkbox.ui-chkbox-all > div.ui-chkbox-box');
 
             this.checkAllToggler.on('mouseenter', function() {
@@ -1144,7 +1144,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
                 }
             });
 
-            this.tbody.off('mouseenter.dataTable mouseleave.dataTable click.dataTable', checkboxSelector)
+            this.jq.off('mouseenter.dataTable mouseleave.dataTable click.dataTable', checkboxSelector)
                         .on('mouseenter.dataTable', checkboxSelector, null, function() {
                             $(this).addClass('ui-state-hover');
                         })
@@ -1385,7 +1385,9 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
             }
         }
 
-        this.fixColumnWidths();
+        if (!this.cfg.reflow) {
+            this.fixColumnWidths();
+        }
 
         if(this.cfg.scrollWidth) {
             if(this.percentageScrollWidth)
@@ -2383,7 +2385,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
         if($(event.target).is(this.rowSelectorForRowClick)) {
             var row = $(rowElement),
             selected = row.hasClass('ui-state-highlight'),
-            metaKey = event.metaKey||event.ctrlKey,
+            metaKey = event.metaKey||event.ctrlKey||PrimeFaces.env.isTouchable(this.cfg),
             shiftKey = event.shiftKey;
 
             this.assignFocusedRow(row);
@@ -2767,7 +2769,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
      * irrespective of whether they are on the currently shown page.
      */
     unselectAllRows: function() {
-        var selectedRows = this.tbody.children('tr.ui-state-highlight'),
+        var selectedRows = this.jq.find('tr.ui-state-highlight'),
         checkboxSelectionEnabled = this.isCheckboxSelectionEnabled(),
         radioSelectionEnabled = this.isRadioSelectionEnabled();
 
@@ -2840,7 +2842,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
     toggleCheckAll: function() {
         var shouldCheckAll = true;
         if(this.cfg.nativeElements) {
-            var checkboxes = this.tbody.find('> tr.ui-datatable-selectable > td.ui-selection-column > :checkbox:visible'),
+            var checkboxes = this.jq.find('tr.ui-datatable-selectable > td.ui-selection-column > :checkbox:visible'),
             checked = this.checkAllToggler.prop('checked'),
             $this = this;
 
@@ -2859,7 +2861,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
             });
         }
         else {
-            var checkboxes = this.tbody.find('> tr.ui-datatable-selectable > td.ui-selection-column > div.ui-chkbox > div.ui-chkbox-box:visible'),
+            var checkboxes = this.jq.find('tr.ui-datatable-selectable > td.ui-selection-column > div.ui-chkbox > div.ui-chkbox-box:visible'),
             checked = this.checkAllToggler.attr('aria-checked') === "true";
             $this = this;
 
@@ -5008,6 +5010,20 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
      */
     groupRows: function() {
         var rows = this.tbody.children('tr');
+
+        // see #8027
+        // remember the original column index
+        // columns are removed because of grouping and mapping to the header isnt possible anymore in #updateColumnsView
+        if(this.headers && !this.hasColGroup()) {
+            for(var i = 0; i < this.headers.length; i++) {
+                var header = this.headers.eq(i),
+                    index = header.index(),
+                    column = this.tbody.find('> tr:not(.ui-expanded-row-content) > td:nth-child(' + (index + 1) + ')');
+
+                column.data('ci', index);
+            }
+        }
+ 
         for(var i = 0; i < this.cfg.groupColumnIndexes.length; i++) {
             this.groupRow(this.cfg.groupColumnIndexes[i], rows);
         }
@@ -5028,6 +5044,7 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
             var row = rows.eq(i);
             var column = row.children('td').eq(colIndex);
             var columnData = column.text();
+
             if(rowGroupCellData != columnData) {
                 groupStartIndex = i;
                 rowGroupCellData = columnData;
@@ -5244,15 +5261,22 @@ PrimeFaces.widget.DataTable = PrimeFaces.widget.DeferredWidget.extend({
 
         // update the visibility of columns but ignore expanded rows and GitHub #7255 grouped headers
         if(this.headers && !this.hasColGroup()) {
-            for(var i = 0; i < this.headers.length; i++) {
-                var header = this.headers.eq(i),
-                    col = this.tbody.find('> tr:not(.ui-expanded-row-content) > td:nth-child(' + (header.index() + 1) + ')');
+            var rows = this.tbody.find('> tr:not(.ui-expanded-row-content)');
+            for(var i = 0; i < rows.length; i++) {
+                var row = rows.eq(i);
+                var columns = row.find('td');
+                
+                for(var j = 0; j < columns.length; j++) {
+                    var column = columns.eq(j);
+                    var columnIndex = column.data('ci') || j;
 
-                if(header.hasClass('ui-helper-hidden')) {
-                    col.addClass('ui-helper-hidden');
-                }
-                else {
-                    col.removeClass('ui-helper-hidden');
+                    var header = this.headers.eq(columnIndex);
+                    if(header.hasClass('ui-helper-hidden')) {
+                        column.addClass('ui-helper-hidden');
+                    }
+                    else {
+                        column.removeClass('ui-helper-hidden');
+                    }
                 }
             }
         }

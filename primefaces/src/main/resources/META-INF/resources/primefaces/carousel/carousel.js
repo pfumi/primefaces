@@ -86,7 +86,7 @@ PrimeFaces.widget.Carousel = PrimeFaces.widget.DeferredWidget.extend({
         this.totalIndicators = this.getTotalIndicators();
         this.isCircular = this.itemsCount !== 0 && this.circular && this.itemsCount >= this.numVisible;
         this.isVertical = this.cfg.orientation === 'vertical';
-        this.isAutoplay = this.cfg.autoplayInterval && this.allowAutoplay;
+        this.isAutoplay = this.totalIndicators && this.cfg.autoplayInterval && this.allowAutoplay;
 
         this.renderDeferred();
     },
@@ -147,7 +147,7 @@ PrimeFaces.widget.Carousel = PrimeFaces.widget.DeferredWidget.extend({
         });
         if (PrimeFaces.env.isTouchable(this.cfg)) {
             if (this.isVertical) {
-                this.itemsContainer.swipe({
+                this.itemsContent.swipe({
                     swipeUp:function(e) {
                         $this.navBackward(e);
                     },
@@ -157,9 +157,8 @@ PrimeFaces.widget.Carousel = PrimeFaces.widget.DeferredWidget.extend({
                     excludedElements: PrimeFaces.utils.excludedSwipeElements()
                 });
             }
-
             else {
-                this.itemsContainer.swipe({
+                this.itemsContent.swipe({
                     swipeLeft:function(e) {
                         $this.navBackward(e);
                     },
@@ -661,12 +660,12 @@ PrimeFaces.widget.Carousel = PrimeFaces.widget.DeferredWidget.extend({
     },
 
     /**
-     * Retrieves the total number of the indicators.
+     * Retrieves the total number of the indicators floor to 0 so it can't be negative.
      * @private
      * @return {number} total number of the indicators.
      */
     getTotalIndicators: function() {
-        return this.itemsCount !== 0 ? Math.ceil((this.itemsCount - this.numVisible) / this.numScroll) + 1 : 0;
+        return Math.max(Math.ceil((this.itemsCount - this.numVisible) / this.numScroll) + 1, 0);
     },
 
     /**

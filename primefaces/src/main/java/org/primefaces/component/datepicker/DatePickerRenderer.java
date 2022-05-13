@@ -28,16 +28,15 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
+import javax.faces.FacesException;
+
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
 import javax.faces.convert.ConverterException;
+
 import org.json.JSONObject;
 import org.primefaces.component.api.UICalendar;
 import org.primefaces.component.calendar.BaseCalendarRenderer;
@@ -196,6 +195,7 @@ public class DatePickerRenderer extends BaseCalendarRenderer {
             .attr("numberOfMonths", datePicker.getNumberOfMonths(), 1)
             .attr("view", datePicker.getView(), null)
             .attr("autoDetectDisplay", datePicker.isAutoDetectDisplay(), true)
+            .attr("responsiveBreakpoint", datePicker.getResponsiveBreakpoint(), DatePicker.RESPONSIVE_BREAKPOINT_SMALL)
             .attr("touchUI", datePicker.isTouchUI(), false)
             .attr("showWeek", datePicker.isShowWeek(), false)
             .attr("appendTo", SearchExpressionFacade.resolveClientId(context, datePicker, datePicker.getAppendTo(),
@@ -263,9 +263,7 @@ public class DatePickerRenderer extends BaseCalendarRenderer {
 
         String mask = datePicker.getMask();
         if (mask != null && !"false".equals(mask)) {
-            String patternTemplate = datePicker.calculatePattern();
-            String maskTemplate = ("true".equals(mask)) ? datePicker.convertPattern(patternTemplate) : mask;
-            wb.attr("mask", maskTemplate)
+            wb.attr("mask", resolveMask(datePicker, mask))
                 .attr("maskSlotChar", datePicker.getMaskSlotChar(), "_")
                 .attr("maskAutoClear", datePicker.isMaskAutoClear(), true);
         }
@@ -273,6 +271,21 @@ public class DatePickerRenderer extends BaseCalendarRenderer {
         encodeClientBehaviors(context, datePicker);
 
         wb.finish();
+    }
+
+    protected String resolveMask(DatePicker datePicker, String mask) {
+        if (!"true".equals(mask)) {
+            return mask;
+        }
+        String patternMask = datePicker.convertPattern(datePicker.calculatePattern());
+        switch (datePicker.getSelectionMode()) {
+            case "multiple":
+                throw new FacesException("Mask is not supported on selectionMode multiple");
+            case "range":
+                return patternMask + " " + datePicker.getRangeSeparator() + " " + patternMask;
+            default:
+                return patternMask;
+        }
     }
 
     protected void encodeScriptDateStyleClasses(WidgetBuilder wb, DatePicker datePicker) throws IOException {

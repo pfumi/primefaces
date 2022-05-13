@@ -67,9 +67,7 @@ PrimeFaces.widget.DatePicker = PrimeFaces.widget.BaseWidget.extend({
 
         // auto detect touch interface for mobile
         this.cfg.autoDetectDisplay = (this.cfg.autoDetectDisplay === undefined) ? true : this.cfg.autoDetectDisplay;
-        if(this.cfg.autoDetectDisplay) {
-            this.cfg.touchUI = PrimeFaces.env.mobile;
-        }
+        this.cfg.responsiveBreakpoint = this.cfg.responsiveBreakpoint || 576;
 
         //i18n and l7n
         this.configureLocale();
@@ -159,6 +157,9 @@ PrimeFaces.widget.DatePicker = PrimeFaces.widget.BaseWidget.extend({
             this.jq.data('primefaces-overlay-target', this.id).find('*').data('primefaces-overlay-target', this.id);
         }
 
+        // set original responsive display
+        this.jq.data().primeDatePicker.updateResponsiveness();
+
         //pfs metadata
         this.input.data(PrimeFaces.CLIENT_ID_DATA, this.id);
     },
@@ -222,6 +223,7 @@ PrimeFaces.widget.DatePicker = PrimeFaces.widget.BaseWidget.extend({
                 clearMaskOnLostFocus: this.cfg.maskAutoClear||true,
                 clearIncomplete: this.cfg.maskAutoClear||true,
                 autoUnmask: false,
+                showMaskOnHover: false,
                 onBeforePaste: function (pastedValue, opts) {
                     // GitHub #8319 issue with pasting mask
                     // TODO: Remove if InputMask 5.0.8+ fixes the issue
@@ -229,7 +231,7 @@ PrimeFaces.widget.DatePicker = PrimeFaces.widget.BaseWidget.extend({
                     return pastedValue;
                 }
             };
-            var pattern = new RegExp("m|d|y|h|s", 'i');
+            var pattern = /[mdyhs]/i;
             var isAlias = pattern.test(this.cfg.mask);
             if (isAlias) {
                 maskCfg.alias = 'datetime';
